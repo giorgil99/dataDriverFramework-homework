@@ -1,0 +1,12 @@
+# Test Automation Engineering Bootcamp gitignore example
+
+.idea/
+build/
+target/
+
+*.ipr
+*.iml
+*.iws
+*.log
+*.mdmp
+
