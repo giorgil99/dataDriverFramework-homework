@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -20,23 +21,28 @@ public class DataDrivenTest extends ServerConnector {
 
     public static void getData() {
         try (
-                Statement cstmt = getConnection().createStatement();) {
+                Statement cstmt = getConnection().createStatement()) {
 
             // executes query to get table content
             String sql = "SELECT firstName, lastName, phone " + "FROM students";
             ResultSet rs = cstmt.executeQuery(sql);
 
             // set 3-3 object that later is going to be used by DataProvider
+            // using metadata to get all rows number to make object dimensions dynamic
 
-            object = new Object[3][3];
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            System.out.println("Number of rows: " + columnsNumber);
+            object = new Object[columnsNumber][3];
             int counter = 0;
             // rs.next starts before first row with data
             while (rs.next()) {
 
+
                 // adds data to object from server here
 
                 object[counter][0] = rs.getString("firstName");
-                object[counter][1] =  rs.getString("lastName");
+                object[counter][1] = rs.getString("lastName");
                 object[counter][2] = rs.getString("phone");
 
                 // counter moves to next column
