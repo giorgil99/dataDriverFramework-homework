@@ -25,12 +25,15 @@ public class ServerConnector {
 
             // main line for connection to server
             con= DriverManager.getConnection(url,user,password);
+//            Use autosaved false mode
+            con.setAutoCommit(false);
             System.out.println("connection established");
 
 
         } catch (IOException e) {
             System.out.println("wrong con");
             System.out.println(e.getMessage());
+
         }
 
 
