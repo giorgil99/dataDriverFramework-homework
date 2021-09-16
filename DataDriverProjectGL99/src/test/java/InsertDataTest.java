@@ -13,8 +13,8 @@ public class InsertDataTest extends ServerConnector {
     public static String gPhone;
 
     @Test
-    public static void SetData() {
-
+    public static void SetData() throws SQLException {
+        PreparedStatement pstmt=null ;
         try (Statement cstmt = getConnection().createStatement();) {
 
 //             Use autosaved false mode is set in ServerConnector class
@@ -27,7 +27,7 @@ public class InsertDataTest extends ServerConnector {
             //            Insert in database students new row
 
             String sql = "INSERT INTO students(ID,firstName,lastName,phone) " + "VALUES (?,?,?,?)";
-            PreparedStatement pstmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+             pstmt = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pstmt.setInt(1,1004);
             pstmt.setString(2,"George");
             pstmt.setString(3,"Hamilton");
@@ -35,6 +35,12 @@ public class InsertDataTest extends ServerConnector {
 
 
             int rowAffected = pstmt.executeUpdate();
+
+            pstmt.setInt(1,1005);
+            pstmt.setString(2,"ako");
+            pstmt.setString(3,"nolan");
+            pstmt.setString(4,"5558578945");
+            int newroowupdate = pstmt.executeUpdate();
             System.out.println(rowAffected);
 
               if (rowAffected == 1) {
@@ -44,12 +50,12 @@ public class InsertDataTest extends ServerConnector {
                 Assert.assertEquals(NewColumnsNumber,columnsNumber,"wrong number of columns");
 
 //                Call commit()
-                pstmt.getConnection().commit();
+
 
 
                    ResultSet rs = pstmt.getGeneratedKeys();
                 if (rs.next()) {
-                    gID = rs.getInt("ID");
+                    gID = rs.getInt(1);
                     System.out.println(gID);
                     gFirstName = rs.getString("firstName");
                     gLastName = rs.getString("lastName");
@@ -61,9 +67,10 @@ public class InsertDataTest extends ServerConnector {
                 Assert.assertEquals(gFirstName, "George");
                 Assert.assertEquals(gLastName, "Hamilton");
                 Assert.assertEquals(gPhone, "5558578965");
-
+                  pstmt.getConnection().commit();
                 // column numbers are different after commit
 
+                  NewColumnsNumber = rsmd.getColumnCount();
                   Assert.assertNotEquals(columnsNumber, NewColumnsNumber, "wrong new number of columns");
 //                Update firstName of added student
 
@@ -72,7 +79,6 @@ public class InsertDataTest extends ServerConnector {
                   pstmt1.getConnection().commit();
                 int newRowsAffected = pstmt1.executeUpdate();
                 Assert.assertEquals(newRowsAffected, 1);
-                  pstmt1.getConnection().commit();
                 ResultSet rs1 = pstmt1.getGeneratedKeys();
 
 
@@ -92,9 +98,11 @@ public class InsertDataTest extends ServerConnector {
 
         }catch (SQLException | IOException throwable) {
             throwable.printStackTrace();
+          if (pstmt != null){
+            pstmt.getConnection().rollback();
             System.out.println("Exception !!!");
         }
 
 
     }
-}
+}}
