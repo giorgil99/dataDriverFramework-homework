@@ -29,14 +29,21 @@ public class ExcelDrivenTest {
 
 
     public  void  excelData() throws IOException {
+        // import excel file
         File file = new File(".\\data.xlsx");
         FileInputStream fis = new FileInputStream(file);
         XSSFWorkbook wb = new XSSFWorkbook(fis);
         XSSFSheet sheet = wb.getSheetAt(0);
 
 // fill First Name, Last Name , Gender and mobile number dynamically using Excel and Apache POI
+
+//         taking rows and columns number
       int rows = sheet.getLastRowNum();
       int columns = sheet.getRow(rows).getLastCellNum();
+        // this is method and excel specific -1 +1 are for matching dimensions
+        // (have to ignore header and side first column)
+
+//         declaring object for dataProvider
         object = new Object[rows][columns-1];
 //        int counter =0;
         for (int i = 0; i < rows; i++) {
@@ -50,6 +57,7 @@ public class ExcelDrivenTest {
         switch (cell.getCellType()) {
 
             case NUMERIC:
+//                lines to match variable types, dataProvider  only takes  strings
                 ((XSSFCell) cell).setCellType(CellType.STRING);
                 String doubleNumber = cell.getStringCellValue();
 
@@ -69,6 +77,8 @@ public class ExcelDrivenTest {
 }
     @DataProvider(name = "filler1")
     public Object[][] getDataFromDataProvider() throws IOException {
+
+//        getting object
         excelData();
         return object;
 
@@ -87,8 +97,7 @@ public class ExcelDrivenTest {
         $("#firstName").sendKeys(firstName);
         $("#lastName").sendKeys(lastName);
 
-//        int gen = Integer.parseInt(gender);
-
+//  these lines adjust 1 and 2 to boy and girl  trueGender=1 click on 'boy'
         if (Objects.equals(gender, "1") || Objects.equals(gender, "2"))
         {
            int trueGender = Integer.parseInt(gender);

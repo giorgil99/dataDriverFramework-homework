@@ -28,7 +28,8 @@ public class DataDrivenTest extends ServerConnector {
             ResultSet rs = cstmt.executeQuery(sql);
 
             // set 3-3 object that later is going to be used by DataProvider
-            // using metadata to get all rows number to make object dimensions dynamic
+            // using metadata to get all column number to make object and
+            //  rowCounter class to get all row number  dimensions dynamic
 
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnsNumber = rsmd.getColumnCount();

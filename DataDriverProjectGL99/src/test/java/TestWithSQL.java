@@ -18,7 +18,7 @@ public class TestWithSQL extends ServerConnector{
 
 
    @BeforeTest
-
+// beforeTest to count rows before any changes are made
    public  void  checkRows() throws SQLException, IOException {
        int rowCountBeforeCommit = RowCounter.connectToCount();
        System.out.println("Row count before INSERT: " +rowCountBeforeCommit );
@@ -43,9 +43,12 @@ public class TestWithSQL extends ServerConnector{
             pstmt.setString(3, "Hamilton");
             pstmt.setString(4, "5558578965");
 
+            // updates and checks row update status
             int rowAffected = pstmt.executeUpdate();
             System.out.println("Updated rows count: " + rowAffected);
 
+
+            // using GeneratedKeys method
             ResultSet rsk = pstmt.getGeneratedKeys();
 
             if (rsk.next()) {
@@ -54,7 +57,7 @@ public class TestWithSQL extends ServerConnector{
 
             }
 
-//            pstmt.
+//           committing and closing connection
 
 
 
@@ -67,12 +70,11 @@ public class TestWithSQL extends ServerConnector{
 
 
 
-
+    // creating statement connection as prepareStatement does not allow querying
             Statement pstmt1 = getConnection().createStatement();
 
 
-//            Assert.assertNotEquals(rowNumber, rowsBeforeCommit);
-
+//            takes last row
 
             String checker = "SELECT TOP 1 * FROM students ORDER BY ID DESC";
             ResultSet rs = pstmt1.executeQuery(checker);
@@ -84,19 +86,19 @@ public class TestWithSQL extends ServerConnector{
                 gLastName = rs.getString("lastName");
                 gPhone = rs.getString("phone");
                 System.out.println(">>> " + gID + " " + gFirstName + " " + gLastName + " " + gPhone);
-
+//                basic assertions
                 Assert.assertEquals(gID, 1004);
                 Assert.assertEquals(gFirstName, "George");
                 Assert.assertEquals(gLastName, "Hamilton");
                 Assert.assertEquals(gPhone, "5558578965");
 
             }
-
-//            String updater = "UPDATE students " +"SET firstName='Lewis' " + "WHERE ID = 1004 ";
+//       getting row with set id=1004 to update it
             String updateQuery = "update students set firstName = 'Lewis' where id = 1004";
             pstmt1.executeUpdate(updateQuery);
 
-//             pstmt0.executeQuery(updater);
+//             checking that update is set
+
             String bringData = "SELECT firstName " + "FROM students " + "WHERE ID=1004";
             ResultSet rs1 = pstmt1.executeQuery(bringData);
             rs1.next();
@@ -105,7 +107,7 @@ public class TestWithSQL extends ServerConnector{
             Assert.assertEquals(gFirstName, "Lewis");
             pstmt1.getConnection().commit();
 
-
+// this class need 1004 ID to be vacant else it throws an exception. delete 1004 row from 'students' table
 
 
 

@@ -1,0 +1,46 @@
+
+
+
+i had to make constunt updates to previous homeworks due to having single connector class for all conections
+(i think that's not a bad thing)
+
+had to rebuild   JDBC_Getting Started _ Homework due to getGeneratedkeys method not working as intended.
+
+in Excel && Stored Procedure Homework had to fix version compatibility error and added dinamism to dataprovider object.
+
+
+
+
+here is a map for each homewrok: 
+
+
+For
+
+JDBC_Getting Started _ Homework 
+
+
+run DataDrivenTest.java
+
+
+
+for 
+
+SQL Querying Homework
+
+run TestWithSQL.java 
+
+
+
+for Excel && Stored Procedure Homework
+
+run StoredProcedure.java and ExcelDrivenTest.java 
+
+
+
+p.s
+
+RowCounter.java and ServerConnector.java are helper classes.  
+
+
+
+
