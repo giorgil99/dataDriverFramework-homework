@@ -1,10 +1,11 @@
 import org.testng.Assert;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.sql.*;
 
-public class TestWithSQL extends ServerConnector {
+public class TestWithSQL extends ServerConnector{
 
 
     public static int gID;
@@ -13,8 +14,20 @@ public class TestWithSQL extends ServerConnector {
     public static String gPhone;
 
 
+   public static String allRowsQuery = "SELECT firstName, lastName, phone " + "FROM students";
+
+
+   @BeforeTest
+
+   public  void  checkRows() throws SQLException, IOException {
+       int rowCountBeforeCommit = RowCounter.connectToCount();
+       System.out.println("Row count before INSERT: " +rowCountBeforeCommit );
+
+
+   }
+
     @Test
-    public static void mainSQLTest() throws SQLException, IOException {
+    public  void mainSQLTest() throws SQLException, IOException {
         PreparedStatement pstmt = null;
 
 //       Use autosaved false mode  - this setting is handled by ServerConnector class
@@ -36,18 +49,29 @@ public class TestWithSQL extends ServerConnector {
             ResultSet rsk = pstmt.getGeneratedKeys();
 
             if (rsk.next()) {
-                System.out.println("new row number " + rsk.getInt(1));
-                pstmt.getConnection().commit();
-                pstmt.close();
+
+                System.out.println("New row number " + rsk.getInt(1));
+
             }
+
+//            pstmt.
+
+
+
+            pstmt.getConnection().commit();
+            pstmt.close();
+
+
+            int rowCountAfterCommit = RowCounter.connectToCount();
+            System.out.println("Row count after commit: " +rowCountAfterCommit );
+
+
 
 
             Statement pstmt1 = getConnection().createStatement();
-            String allrowsquery = "SELECT firstName, lastName, phone " + "FROM students";
-            ResultSet endRowCounter = pstmt1.executeQuery(allrowsquery);
-            ResultSetMetaData metaData = endRowCounter.getMetaData();
-            int rowNumber = metaData.getColumnCount();
-            System.out.println("row number is still: " + rowNumber);
+
+
+//            Assert.assertNotEquals(rowNumber, rowsBeforeCommit);
 
 
             String checker = "SELECT TOP 1 * FROM students ORDER BY ID DESC";
@@ -79,6 +103,11 @@ public class TestWithSQL extends ServerConnector {
             gFirstName = rs1.getString("firstName");
             System.out.println("new name is: " + gFirstName);
             Assert.assertEquals(gFirstName, "Lewis");
+            pstmt1.getConnection().commit();
+
+
+
+
 
 
         } catch (SQLException | IOException throwable) {

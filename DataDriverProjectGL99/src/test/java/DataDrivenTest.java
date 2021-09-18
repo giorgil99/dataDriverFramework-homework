@@ -32,21 +32,24 @@ public class DataDrivenTest extends ServerConnector {
 
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnsNumber = rsmd.getColumnCount();
-            System.out.println("Number of rows: " + columnsNumber);
-            object = new Object[columnsNumber][3];
+            int rowCount = RowCounter.connectToCount();
+            System.out.println("Number of rows: " + rowCount);
+            System.out.println("Number of columns: " + columnsNumber);
+            object = new Object[rowCount][columnsNumber];
             int counter = 0;
             // rs.next starts before first row with data
             while (rs.next()) {
 
 
                 // adds data to object from server here
+                for (int i = 0; i < columnsNumber; i++) {
 
-                object[counter][0] = rs.getString("firstName");
-                object[counter][1] = rs.getString("lastName");
-                object[counter][2] = rs.getString("phone");
 
+                    object[counter][i] = rs.getString(i+1);
+                }
                 // counter moves to next column
                 counter++;
+
             }
 
         } catch (SQLException | IOException throwable) {
